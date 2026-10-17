@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: conags-care
+    runtime: node
+    region: frankfurt
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    autoDeploy: true

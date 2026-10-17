@@ -1,0 +1,17 @@
+'use client';
+import {useEffect,useState} from 'react'; import {useRouter} from 'next/navigation';
+import {StaffAction,StaffBadge,StaffLoading,StaffNotice,StaffPage,StaffPageHeader,StaffPageInner,StaffPanel,StaffSectionHeader} from '@/components/StaffPortalUI';
+const fmt=(v:string|null)=>v?new Date(v+'T00:00:00').toLocaleDateString('en-GB',{dateStyle:'medium'}):'Not scheduled';
+function tone(v:string){return v==='completed'?'live':v==='cancelled'?'danger':v==='scheduled'||v==='in_progress'?'attention':'neutral';}
+export default function StaffTrainingPage(){
+ const router=useRouter();const[data,setData]=useState<any>(null);const[loading,setLoading]=useState(true);const[error,setError]=useState('');
+ async function load(){setLoading(true);setError('');try{const r=await fetch('/api/staff/training',{cache:'no-store'});if(r.status===401){router.replace('/staff/login');return;}const b=await r.json();if(!r.ok)throw new Error(b.error||'Unable to load training.');setData(b);}catch(e){setError(e instanceof Error?e.message:'Unable to load training.');}finally{setLoading(false);}}
+ useEffect(()=>{void load();},[router]);
+ if(loading)return <StaffLoading label="Loading training schedule…"/>;
+ const c=data?.current;
+ return <StaffPage className="staff-page--training"><StaffPageInner><StaffPageHeader eyebrow="Staff training" title="Training" subtitle="Your mandatory training schedule, selected training location and completed history." actions={<StaffAction onClick={()=>void load()}>Refresh</StaffAction>}/>{error&&<StaffNotice tone="danger"><strong>Training unavailable</strong><p>{error}</p></StaffNotice>}
+ <div className="staff-training-overview">{data?.preferredTrainingLocation&&<StaffPanel><StaffSectionHeader title="Selected training location"/><div className="staff-training-location"><StaffBadge tone="live">Your choice</StaffBadge><strong>{data.preferredTrainingLocation}</strong><span>Mandatory one-week training centre</span></div></StaffPanel>}
+ <StaffPanel className="staff-training-current">{!c?<><StaffBadge tone="attention">TRAINING DUE</StaffBadge><h2 className="staff-card-heading">Your training week has not been scheduled yet</h2><p className="staff-card-copy">CONAGS will communicate the week, location and practical instructions through the Staff Portal.</p><StaffAction href="/staff/messages">Message CONAGS</StaffAction></>:<><div className="staff-section-heading"><div><StaffBadge tone={tone(c.status)}>{String(c.status).replaceAll('_',' ')}</StaffBadge><h2 className="staff-card-heading">{c.training_type}</h2></div></div><div className="staff-training-facts"><div><span>Starts</span><strong>{fmt(c.week_start)}</strong></div><div><span>Ends</span><strong>{fmt(c.week_end)}</strong></div><div><span>Location</span><strong>{c.location||'To be communicated'}</strong></div></div>{c.notes&&<p className="staff-card-copy staff-preserve-whitespace">{c.notes}</p>}</>}</StaffPanel></div>
+ <StaffPanel><StaffSectionHeader title="Training history" copy="Completed and previous training assignments remain available here."/>{!(data?.history||[]).length?<div className="staff-empty">No training records yet.</div>:<div className="staff-training-history">{data.history.map((x:any)=><article key={x.id}><div><strong>{x.training_type}</strong><span>{fmt(x.week_start)} to {fmt(x.week_end)}</span></div><StaffBadge tone={tone(x.status)}>{String(x.status).replaceAll('_',' ')}</StaffBadge></article>)}</div>}</StaffPanel>
+ </StaffPageInner></StaffPage>;
+}
