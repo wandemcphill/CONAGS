@@ -35,8 +35,8 @@ jobs:
           test -f "$source_app/package.json"
 
           # Preserve this one-time publisher; copy the app files but not source CI workflows.
-          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} \\;
-          find "$source_app" -mindepth 1 -maxdepth 1 ! -name .github -exec cp -a {} . \\;
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} \;
+          find "$source_app" -mindepth 1 -maxdepth 1 ! -name .github -exec cp -a {} . \;
           test -f package.json
 
           git config user.name "github-actions[bot]"
