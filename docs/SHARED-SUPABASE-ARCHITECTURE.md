@@ -1,55 +1,34 @@
 # Shared Supabase architecture
 
-BIMED and CONAGS intentionally share one Supabase project. They do not share application tables.
+BIMED, LAUREM and CONAGS intentionally share one Supabase project, but their application data is stored in separate namespaces.
 
 ## Ownership boundary
 
-BIMED retains ownership of the existing shared `recruitment_*` and legacy workforce tables. CONAGS uses a physical `laurem_` prefix for its portal tables and RPCs.
+- BIMED continues to own the existing unprefixed `recruitment_*` and legacy workforce tables.
+- LAUREM continues to own the physical `laurem_*` tables, functions, audit data and storage buckets.
+- CONAGS uses physical `conags_*` tables and RPC functions, plus the private `conags-private-documents` and `conags-staff-photos` storage buckets.
 
-The CONAGS server client in `lib/db.ts` keeps the application's logical table names stable while translating known CONAGS table and RPC names to their prefixed physical names. This means an existing CONAGS call such as `db().from('recruitment_applications')` reaches `laurem_recruitment_applications`, not BIMED's table.
+The CONAGS server client in `lib/db.ts` keeps the existing application call-sites compatible: logical names such as `recruitment_applications`, and legacy `laurem_*` identifiers still present in the forked source, are routed to the corresponding `conags_*` physical object. It must never route a CONAGS request to a `laurem_*` or unprefixed BIMED table.
 
-This allowlist includes the logical `workforce_audit_events` table used by assignment and leave audit logging. It is translated to `laurem_workforce_audit_events`, so workforce audit events cannot fall through to a shared `workforce_audit_events` table.
+## Data isolation and cutover
 
-Unknown table names and Supabase operations are passed through unchanged. CONAGS therefore cannot silently take over BIMED-only tables through the CONAGS name map.
+The CONAGS namespace-isolation migration clones table definitions, indexes, constraints, foreign keys, RLS state, database functions and triggers from the existing LAUREM schema. It creates an empty CONAGS starting point; **it does not copy table rows, staff records, candidate records, invitations, interview answers, contracts, invoices, audit records or stored files**.
 
-## Data ownership
+The original LAUREM and BIMED tables, functions, storage buckets and existing records remain untouched. The LAUREM migration history is retained as historical source-control context; after the namespace-isolation migration, all new CONAGS schema changes must use `conags_*` names and must not clean up or alter LAUREM/BIMED objects.
 
-CONAGS is a brand-new portal. Its production recruitment namespace starts empty.
+## Security boundary
 
-Existing applicants, invites, interviews, second interviews, contract signatures and other recruitment records in the shared `recruitment_*` namespace belong to BIMED's existing portal. They are not CONAGS records and must not be copied into CONAGS.
+All CONAGS tables have Row Level Security enabled and grant table access only to the server-side `service_role`. CONAGS RPCs are created with execution restricted to `service_role`; no CONAGS table or security-definer RPC is intentionally exposed to `anon` or `authenticated`. The portal server must keep `SUPABASE_SERVICE_ROLE_KEY` server-side only.
 
-The corrective cutover migration removes any records previously copied into the CONAGS namespace and leaves the shared source tables untouched.
+The CONAGS storage buckets are private. Document and photo access must go through authenticated server routes; never make these buckets public.
 
-## Migration rule
+## Deployment and verification
 
-Never rename, drop, truncate, or repurpose the existing shared BIMED tables to satisfy CONAGS migrations.
+1. Apply the tracked `conags_namespace_isolation` migration to the existing shared project.
+2. Confirm that all `conags_*` tables exist, are empty, and have RLS enabled.
+3. Confirm that the CONAGS functions and triggers refer only to CONAGS-owned tables/functions.
+4. Deploy the CONAGS app with the updated `lib/db.ts` and storage bucket names.
+5. Exercise invitation, application, first/second interview, evidence upload, contract, onboarding and staff account flows.
+6. Verify new records appear only in `conags_*`; re-check that LAUREM and BIMED row counts have not changed.
 
-CONAGS migrations create and evolve only the `laurem_*` physical namespace and CONAGS-owned storage. New CONAGS candidate activity should create records only in that namespace.
-
-The historical isolation migration contains legacy bootstrap-copy SQL because it was the migration used during the original shared-schema cutover. It must be treated as a historical migration and must not be repurposed as a data-import mechanism. The subsequent empty-cutover migration and baseline guard enforce the current launch policy: CONAGS starts with zero application/recruitment/workforce rows.
-
-## Production baseline
-
-After correction, production contains:
-
-- CONAGS invites: 0
-- CONAGS applications: 0
-- CONAGS interviews: 0
-- CONAGS second interviews: 0
-- CONAGS archived legacy contract signatures: 0
-
-The existing BIMED/shared counts remain unchanged: 59 invites, 15 applications, 4 interviews, 9 second interviews and 6 contract signatures.
-
-The executable baseline guard migration fails the migration sequence if any CONAGS-owned rows exist at first launch. It performs no writes against BIMED/shared recruitment tables.
-
-## Deployment sequence
-
-1. Apply the CONAGS schema/isolation migrations.
-2. Apply the empty-cutover cleanup migration.
-3. Apply the CONAGS empty-baseline guard and require it to succeed.
-4. Deploy the CONAGS application containing the `lib/db.ts` routing layer.
-5. Run the authenticated CONAGS system health check.
-6. Confirm new CONAGS application writes are landing in `laurem_*` tables.
-7. Keep BIMED on its existing shared tables. No BIMED migration is required for the CONAGS cut-over.
-
-This architecture intentionally favours additive isolation over a risky in-place rename or schema replacement.
+Do not rename, drop, truncate, repurpose or bulk-copy existing shared tables to establish CONAGS.

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getStaffSession } from '@/lib/laurem-staff-auth';
 
-const PHOTO_BUCKET = 'laurem-staff-photos';
+const PHOTO_BUCKET = 'conags-staff-photos';
 
 function hasValidImageSignature(type: string, bytes: Uint8Array) {
   if (type === 'image/jpeg') {

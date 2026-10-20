@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   let previewUrl: string | null = null;
   if (document.storage_path) {
-    const { data: signed, error: signedError } = await client.storage.from('laurem-private-documents').createSignedUrl(document.storage_path, SIGNED_URL_TTL_SECONDS);
+    const { data: signed, error: signedError } = await client.storage.from('conags-private-documents').createSignedUrl(document.storage_path, SIGNED_URL_TTL_SECONDS);
     if (signedError) return NextResponse.json({ error: 'Unable to prepare document preview.' }, { status: 500 });
     previewUrl = signed?.signedUrl || null;
   }

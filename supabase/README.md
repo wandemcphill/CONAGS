@@ -1,32 +1,27 @@
 # CONAGS Supabase schema governance
 
-## Production baseline
+## Shared project boundary
 
-The CONAGS production database contains a historical migration chain that predates source-control recovery. As of 20 September 2026, the verified production baseline ended at migration `20260920184540_laurem_missing_fk_indexes_20260920`.
+CONAGS, LAUREM and BIMED use the same Supabase project. The current ownership boundary is:
 
-The repository does not yet contain the preceding historical migration files. That gap is documented explicitly in `docs/production-database-baseline.md`.
+- BIMED: existing unprefixed `recruitment_*` and legacy workforce tables.
+- LAUREM: existing `laurem_*` tables, RPCs, audit records and private buckets.
+- CONAGS: isolated `conags_*` tables and RPCs, plus private `conags-private-documents` and `conags-staff-photos` buckets.
 
-## Source-controlled forward migrations
+## Namespace isolation migration
 
-The first source-controlled migrations added after the recovered baseline are:
+`20261020165000_conags_namespace_isolation.sql` is additive. It clones schema metadata from existing LAUREM tables and functions into the CONAGS namespace but does not copy any data rows or stored files. It enables RLS, grants access to the server-side `service_role` only, and creates private CONAGS storage buckets.
 
-- `20260920213203_laurem_schema_drift_guard_20260920.sql`
-- `20260920213318_laurem_schema_drift_guard_fix_20260920.sql`
+The old `laurem_*` migration filenames are retained for historical/source-control compatibility. Do not replay or repurpose historical cutover/cleanup migrations against the live shared project. New CONAGS migrations must use `conags_*` objects and must not rename, drop, truncate or repurpose LAUREM or BIMED objects.
 
-Together they create the service-role-only `public.laurem_verify_release_schema()` contract.
+## Release verification
 
-The verifier checks:
+The CONAGS database namespace is considered ready only when:
 
-- 38 CONAGS lifecycle/workforce tables
-- RLS enabled on every contract table
-- critical employment-document and visa columns
-- the indexed performance/FK contract established by the recent hardening work
-- presence of the recovered baseline migration `20260920184540`
+- the expected CONAGS tables and RPCs exist under `conags_*`;
+- all CONAGS tables have RLS enabled and server-only grants;
+- no pre-existing LAUREM or BIMED rows were copied or modified;
+- new candidate, interview, document and staff records are written exclusively to CONAGS objects; and
+- the authenticated release-health endpoint passes.
 
-## Release behavior
-
-The authenticated admin release-health endpoint consumes the full contract result.
-
-The public `/api/health/ready` endpoint consumes only the boolean result and never exposes the detailed drift inventory.
-
-Future database changes must add a tracked migration file and keep the release-health contract green before deployment.
+Any future schema changes must be tracked in a migration and verified against the live schema before deployment.

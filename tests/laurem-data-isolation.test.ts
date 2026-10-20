@@ -12,7 +12,7 @@ describe('CONAGS data isolation', () => {
 
   it('filters audit API output to CONAGS sources', () => {
     const route = readFileSync('app/api/admin/audit/route.ts', 'utf8');
-    expect(route).toContain(".or('source_table.is.null,source_table.ilike.laurem_%')");
+    expect(route).toContain(".or('source_table.is.null,source_table.ilike.conags_%')");
   });
 
   it('contains the database migration that removes BIMED audit coupling', () => {

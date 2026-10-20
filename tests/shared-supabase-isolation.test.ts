@@ -9,10 +9,11 @@ describe('shared Supabase isolation', () => {
 
   it('routes CONAGS tables and RPCs through explicit namespace maps', () => {
     expect(dbSource).toContain('function mapTableName(name: string)');
-    expect(dbSource).toContain("if (LAUREM_TABLES.has(name)) return `laurem_${name}`;");
+    expect(dbSource).toContain("if (name.startsWith('laurem_')) return `conags_${name.slice('laurem_'.length)}`;");
+    expect(dbSource).toContain("if (CONAGS_TABLES.has(name)) return `conags_${name}`;");
     expect(dbSource).toContain("'interview_attempts'");
     expect(dbSource).toContain('function mapRpcName(name: string)');
-    expect(dbSource).toContain("if (LAUREM_RPC_NAMES.has(name)) return `laurem_${name}`;");
+    expect(dbSource).toContain("if (CONAGS_RPC_NAMES.has(name)) return `conags_${name}`;");
     expect(dbSource).toContain("'legacy_contract_signatures'");
     expect(dbSource).toContain("'workforce_audit_events'");
     expect(dbSource).toContain('CONAGS database namespace violation');

@@ -73,7 +73,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       fileSizeBytes = file.size;
       documentHash = hashBytes(bytes);
       storagePath = `staff/${staffId}/${randomUUID()}-${originalFilename || 'document'}`;
-      const { error: uploadError } = await client.storage.from('laurem-private-documents').upload(storagePath, bytes, { contentType: mimeType, upsert: false });
+      const { error: uploadError } = await client.storage.from('conags-private-documents').upload(storagePath, bytes, { contentType: mimeType, upsert: false });
       if (uploadError) throw uploadError;
     } else {
       contentText = `${content}\n\nEMPLOYER DOCUMENT CONTROL\nFor and on behalf of ${lauremCompany.documentIssuer.employer}\nName: ${lauremCompany.documentIssuer.name}\nTitle: ${lauremCompany.documentIssuer.title}`;

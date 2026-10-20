@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { readAdminSession } from '@/lib/admin-auth';
 
-const PHOTO_BUCKET = 'laurem-staff-photos';
+const PHOTO_BUCKET = 'conags-staff-photos';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ staffId: string }> }) {
   const session = readAdminSession(request);

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const LAUREM_TABLES = new Set([
+const CONAGS_TABLES = new Set([
   'recruitment_invites',
   'recruitment_applications',
   'recruitment_interviews',
@@ -45,7 +45,7 @@ const LAUREM_TABLES = new Set([
   'staff_visa_case_events',
 ]);
 
-const LAUREM_RPC_NAMES = new Set([
+const CONAGS_RPC_NAMES = new Set([
   'create_recruitment_application',
   'consume_recruitment_contract_token',
   'laurem_record_evidence_review',
@@ -64,14 +64,16 @@ const LAUREM_RPC_NAMES = new Set([
 ]);
 
 function mapTableName(name: string) {
-  if (name.startsWith('laurem_')) return name;
-  if (LAUREM_TABLES.has(name)) return `laurem_${name}`;
+  if (name.startsWith('conags_')) return name;
+  if (name.startsWith('laurem_')) return `conags_${name.slice('laurem_'.length)}`;
+  if (CONAGS_TABLES.has(name)) return `conags_${name}`;
   throw new Error(`CONAGS database namespace violation: table "${name}" is outside the CONAGS namespace.`);
 }
 
 function mapRpcName(name: string) {
-  if (name.startsWith('laurem_')) return name;
-  if (LAUREM_RPC_NAMES.has(name)) return `laurem_${name}`;
+  if (name.startsWith('conags_')) return name;
+  if (name.startsWith('laurem_')) return `conags_${name.slice('laurem_'.length)}`;
+  if (CONAGS_RPC_NAMES.has(name)) return `conags_${name}`;
   throw new Error(`CONAGS database namespace violation: RPC "${name}" is outside the CONAGS namespace.`);
 }
 

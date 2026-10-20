@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { getStaffSession } from '@/lib/laurem-staff-auth';
 import { renderLauremPrintableHtml } from '@/lib/laurem-document-renderer';
 
-const BUCKET = 'laurem-private-documents';
+const BUCKET = 'conags-private-documents';
 
 function safeFilename(value: string, mimeType: string) {
   const cleaned = value

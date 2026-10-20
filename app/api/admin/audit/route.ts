@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   try {
     let query = db().from('laurem_audit_events')
       .select('id,lifecycle_area,entity_type,entity_id,application_id,staff_id,actor_type,actor,action,previous_state,new_state,reason,metadata,occurred_at,source_table')
-      .or('source_table.is.null,source_table.ilike.laurem_%')
+      .or('source_table.is.null,source_table.ilike.conags_%')
       .order('occurred_at', { ascending: false })
       .limit(limit);
 
