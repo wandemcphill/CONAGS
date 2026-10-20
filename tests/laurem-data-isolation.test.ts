@@ -7,7 +7,7 @@ describe('CONAGS data isolation', () => {
 
     expect(source).toContain('CONAGS database namespace violation: table');
     expect(source).toContain('CONAGS database namespace violation: RPC');
-    expect(source).toContain('if (name.startsWith(\'laurem_\')) return name;');
+    expect(source).toContain("if (name.startsWith('laurem_')) return `conags_${name.slice('laurem_'.length)}`;");
   });
 
   it('filters audit API output to CONAGS sources', () => {
