@@ -34,9 +34,9 @@ describe('CONAGS employment contract letterhead', () => {
     });
 
     expect(html).toContain('CONAGS CARE');
-    expect(html).toContain('CONAGS CARE GROUP LIMITED');
-    expect(html).toContain('Company No. SC490520');
-    expect(html).toContain('557 Parkhouse Road, Barrhead, Glasgow, Scotland, G78 1TE');
+    expect(html).toContain('CONAGS CARE LIMITED');
+    expect(html).toContain('Company No. 10733646');
+    expect(html).toContain('20-22 Wenlock Road, London, England, N1 7GU');
     expect(html).toContain('<span class="laurem-contract-number">1</span>'); 
     expect(html).toContain('COMMENCEMENT OF EMPLOYMENT');
     expect(html).not.toContain('<pre>');
@@ -45,7 +45,7 @@ describe('CONAGS employment contract letterhead', () => {
 
 
   it('re-renders legacy issued contracts through the current permanent letterhead', () => {
-    const legacy = `CONAGS CARE GROUP LIMITED
+    const legacy = `CONAGS CARE LIMITED
 
 CONTRACT OF EMPLOYMENT (GUARANTEED MINIMUM HOURS)
 
@@ -68,10 +68,10 @@ Employment begins on 1 January 2027.
     });
 
     expect(html).toContain('CONAGS CARE');
-    expect(html).toContain('CONAGS CARE GROUP LIMITED');
-    expect(html).toContain('Company No. SC490520');
+    expect(html).toContain('CONAGS CARE LIMITED');
+    expect(html).toContain('Company No. 10733646');
     expect(html).not.toContain('<div class="legacy-letterhead">');
-    expect(html.match(/CONAGS CARE GROUP LIMITED/g)?.length).toBe(2);
+    expect(html.match(/CONAGS CARE LIMITED/g)?.length).toBe(2);
     expect(html).toContain('CONTRACT OF EMPLOYMENT (GUARANTEED MINIMUM HOURS)');
     expect(html).toContain('SIGNED ELECTRONICALLY');
   });

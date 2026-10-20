@@ -18,7 +18,7 @@ const completeStandard: LauremContractIssueInput = {
   holidayEntitlement: '28 days pro rata',
   pensionScheme: 'The applicable workplace pension scheme',
   contractType: 'standard',
-  contractContent: 'Employer: Conags Care Group Limited. Salary: £32,000 per annum.',
+  contractContent: 'Employer: Conags Care Limited. Salary: £32,000 per annum.',
 };
 
 const completeNurse: LauremContractIssueInput = {
@@ -32,7 +32,7 @@ const completeNurse: LauremContractIssueInput = {
   preRegistrationSalary: 30000,
   postRegistrationSalary: 35000,
   annualSalary: 35000,
-  contractContent: 'Employer: Conags Care Group Limited. Pre-registration salary £30,000 per annum. Post-registration salary £35,000 per annum.',
+  contractContent: 'Employer: Conags Care Limited. Pre-registration salary £30,000 per annum. Post-registration salary £35,000 per annum.',
 };
 
 describe('CONAGS contract completeness gate', () => {

@@ -1,11 +1,11 @@
-const LAUREM_LEGAL_NAME = 'Conags Care Group Limited';
+const CONAGS_LEGAL_NAME = 'Conags Care Limited';
 
 export const lauremCompany = {
-  legalName: LAUREM_LEGAL_NAME,
+  legalName: CONAGS_LEGAL_NAME,
   tradingName: 'Conags Care',
-  companyNumber: 'SC490520',
-  registration: 'Registered in Scotland',
-  registeredOffice: '557 Parkhouse Road, Barrhead, Glasgow, Scotland, G78 1TE',
+  companyNumber: '10733646',
+  registration: 'Registered in England and Wales',
+  registeredOffice: '20-22 Wenlock Road, London, England, N1 7GU',
   website: 'https://conagscare.com',
   locations: ['London', 'Glasgow', 'Manchester', 'West Midlands'],
   publicEmails: {
@@ -17,7 +17,7 @@ export const lauremCompany = {
   documentIssuer: {
     name: 'Dezou Maurice',
     title: 'Manager',
-    employer: LAUREM_LEGAL_NAME,
+    employer: CONAGS_LEGAL_NAME,
   },
   portalNotifications: {
     internalRecipient: 'info@conagscare.com',
