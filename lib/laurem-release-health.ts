@@ -49,8 +49,8 @@ export const EXPECTED_PORTAL_TABLES = [
   'staff_visa_case_events',
 ] as const;
 
-export const REQUIRED_PRIVATE_BUCKET = 'laurem-private-documents';
-export const REQUIRED_PRIVATE_BUCKETS = [REQUIRED_PRIVATE_BUCKET, 'laurem-staff-photos', 'interview-recordings'] as const;
+export const REQUIRED_PRIVATE_BUCKET = 'conags-private-documents';
+export const REQUIRED_PRIVATE_BUCKETS = [REQUIRED_PRIVATE_BUCKET, 'conags-staff-photos', 'conags-interview-recordings'] as const;
 
 export type ReleaseHealth = {
   ok: boolean;

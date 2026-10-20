@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     if (!signatureMatches(file.type, bytes)) return NextResponse.json({ error: 'The uploaded file does not match its declared document type.' }, { status: 400 });
     const checksumSha256 = crypto.createHash('sha256').update(bytes).digest('hex');
     const { error: uploadError } = await client.storage
-      .from('laurem-private-documents')
+      .from('conags-private-documents')
       .upload(path, bytes, { contentType: file.type, upsert: false });
     if (uploadError) throw uploadError;
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       uploaded_by: 'candidate',
     }).select('id,document_type,original_filename,status,uploaded_at,checksum_sha256,superseded_at,superseded_by').single();
     if (error) {
-      await client.storage.from('laurem-private-documents').remove([path]);
+      await client.storage.from('conags-private-documents').remove([path]);
       throw error;
     }
 

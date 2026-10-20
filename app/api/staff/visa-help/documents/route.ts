@@ -38,7 +38,7 @@ export async function POST(request:NextRequest){
       if(!task || task.staff_id!==session.staff_id || task.visa_help_case_id!==caseRow.id || !['open','rejected'].includes(task.status))return NextResponse.json({error:'The selected Visa Help request is not available for this upload.'},{status:422});
     }
     const storagePath='visa-help/'+session.staff_id+'/'+randomUUID()+'-'+safeName;
-    const {error:uploadError}=await client.storage.from('laurem-private-documents').upload(storagePath,bytes,{contentType:file.type,upsert:false});
+    const {error:uploadError}=await client.storage.from('conags-private-documents').upload(storagePath,bytes,{contentType:file.type,upsert:false});
     if(uploadError)throw uploadError;
 
     const documentHash=createHash('sha256').update(bytes).digest('hex');

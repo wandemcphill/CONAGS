@@ -6,6 +6,6 @@ describe('CONAGS release health schema coverage', () => {
     expect(EXPECTED_PORTAL_TABLES).toContain('legacy_contract_signatures');
     expect(EXPECTED_PORTAL_TABLES).toContain('workforce_audit_events');
     expect(EXPECTED_PORTAL_TABLES).toHaveLength(38);
-    expect(REQUIRED_PRIVATE_BUCKETS).toEqual(['laurem-private-documents', 'laurem-staff-photos', 'interview-recordings']);
+    expect(REQUIRED_PRIVATE_BUCKETS).toEqual(['conags-private-documents', 'laurem-staff-photos', 'interview-recordings']);
   });
 });

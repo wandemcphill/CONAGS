@@ -6,7 +6,7 @@ BIMED, LAUREM and CONAGS intentionally share one Supabase project, but their app
 
 - BIMED continues to own the existing unprefixed `recruitment_*` and legacy workforce tables.
 - LAUREM continues to own the physical `laurem_*` tables, functions, audit data and storage buckets.
-- CONAGS uses physical `conags_*` tables and RPC functions, plus the private `conags-private-documents` and `conags-staff-photos` storage buckets.
+- CONAGS uses physical `conags_*` tables and RPC functions, plus the private `conags-private-documents`, `conags-staff-photos` and `conags-interview-recordings` storage buckets.
 
 The CONAGS server client in `lib/db.ts` keeps the existing application call-sites compatible: logical names such as `recruitment_applications`, and legacy `laurem_*` identifiers still present in the forked source, are routed to the corresponding `conags_*` physical object. It must never route a CONAGS request to a `laurem_*` or unprefixed BIMED table.
 

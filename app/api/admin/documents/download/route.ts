@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     if (!document) return NextResponse.json({ error: 'Document not found.' }, { status: 404 });
 
     const { data: signed, error: signedError } = await client.storage
-      .from('laurem-private-documents')
+      .from('conags-private-documents')
       .createSignedUrl(document.storage_path, SIGNED_URL_TTL_SECONDS, {
         download: document.original_filename,
       });
